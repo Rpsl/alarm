@@ -1,7 +1,10 @@
 $('document').ready(function(){
-    var box = $('input');
+    $(document).on('ajaxError', function(e, xhr, options){
+        alert('Произошла ошибка при сохранение.');
+        location.reload();
+    });
 
-    $(box).on('change', function(){
+    $('input').on('change', function(){
         $.post('/save', $('form').serialize(), function(data, status, xhr){
 
         });

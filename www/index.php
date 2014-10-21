@@ -111,10 +111,14 @@
 
         if( file_put_contents( CACHE_SETTINGS, json_encode( $result ), LOCK_EX ) )
         {
-            return json_encode(['ok' => true]);
+            $responce = [ 'ok' => TRUE, 'code' => 200 ];
+        }
+        else
+        {
+            $responce = [ 'ok' => FALSE, 'code' => 503 ];
         }
 
-        return json_encode(['bad' => true]);
+        return $app->json( $responce, $responce['code'] );
 
 
     });
@@ -130,13 +134,13 @@
 
         $out = '';
 
-        $tpl = "%d  %d  %s  *   *   %s\n";
+        $tpl = "%d  %d  *   *   %s   %s\n";
 
         if( !empty( $cache_settings['work'] ) )
         {
             foreach( $cache_settings['work'] as $v )
             {
-                $out .= sprintf( $tpl, $v['min'], $v['hour'], '[1-5]', '%RUN_SCRIPT%');
+                $out .= sprintf( $tpl, $v['min'], $v['hour'], '1-5', '%RUN_SCRIPT%');
             }
         }
 
@@ -144,9 +148,11 @@
         {
             foreach( $cache_settings['weekend'] as $v )
             {
-                $out .= sprintf( $tpl, $v['min'], $v['hour'], '[6-7]', '%RUN_SCRIPT%');
+                $out .= sprintf( $tpl, $v['min'], $v['hour'], '6-7', '%RUN_SCRIPT%');
             }
         }
+
+        $out .= "\n";
 
         return $out;
 
